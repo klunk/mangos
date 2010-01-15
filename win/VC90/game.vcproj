@@ -1012,6 +1012,119 @@
 			</File>
 		</Filter>
 		<Filter
+			Name="Motion generators"
+			>
+			<File
+				RelativePath="..\..\src\game\AnimalRandomMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\ConfusedMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\ConfusedMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\DestinationHolder.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\DestinationHolder.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\AuctionHouseBot.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\game\AuctionHouseBot.h">
+			</File>
+			<File
+				RelativePath="..\..\src\game\AuctionHouseMgr.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\game\DestinationHolderImp.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\FleeingMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\FleeingMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\HomeMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\HomeMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\IdleMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\IdleMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MotionMaster.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MotionMaster.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\MovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\PointMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\PointMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\RandomMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\RandomMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\TargetedMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\TargetedMovementGenerator.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\Traveller.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\WaypointMovementGenerator.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\WaypointMovementGenerator.h"
+				>
+			</File>
+		</Filter>
+		<Filter
 			Name="Object"
 			>
 			<File
@@ -1023,22 +1136,12 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AnimalRandomMovementGenerator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\ArenaTeam.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\game\ArenaTeam.h"
 				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\AuctionHouseBot.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\game\AuctionHouseBot.h">
 			</File>
 			<File
 				RelativePath="..\..\src\game\AuctionHouseMgr.cpp"
@@ -1062,14 +1165,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\Calendar.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ConfusedMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ConfusedMovementGenerator.h"
 				>
 			</File>
 			<File
@@ -1133,31 +1228,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\DestinationHolder.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\DestinationHolder.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\DestinationHolderImp.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\DynamicObject.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\game\DynamicObject.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\FleeingMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\FleeingMovementGenerator.h"
 				>
 			</File>
 			<File
@@ -1197,22 +1272,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\HomeMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\HomeMovementGenerator.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\IdleMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\IdleMovementGenerator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\Item.cpp"
 				>
 			</File>
@@ -1238,22 +1297,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\LootMgr.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\MotionMaster.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\MotionMaster.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\MovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\MovementGenerator.h"
 				>
 			</File>
 			<File
@@ -1429,22 +1472,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\PointMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\PointMovementGenerator.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\RandomMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\RandomMovementGenerator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\ReactorAI.cpp"
 				>
 			</File>
@@ -1481,14 +1508,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\TargetedMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\TargetedMovementGenerator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\TemporarySummon.cpp"
 				>
 			</File>
@@ -1510,10 +1529,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\TotemAI.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Traveller.h"
 				>
 			</File>
 			<File
@@ -1542,14 +1557,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\Vehicle.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\WaypointMovementGenerator.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\WaypointMovementGenerator.h"
 				>
 			</File>
 		</Filter>
