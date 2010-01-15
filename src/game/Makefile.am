@@ -38,6 +38,8 @@ libmangosgame_a_SOURCES = \
 	ArenaTeam.cpp \
 	ArenaTeam.h \
 	ArenaTeamHandler.cpp \
+	AuctionHouseBot.cpp \
+	AuctionHouseBot.h \
 	AuctionHouseHandler.cpp \
 	AuctionHouseMgr.cpp \
 	AuctionHouseMgr.h \
@@ -214,6 +216,32 @@ libmangosgame_a_SOURCES = \
 	PetitionsHandler.cpp \
 	Player.cpp \
 	Player.h \
+	PlayerbotMgr.cpp \
+	PlayerbotMgr.h \
+	PlayerbotAI.cpp \
+	PlayerbotAI.h \
+	PlayerbotClassAI.cpp \
+	PlayerbotClassAI.h \
+	PlayerbotDeathKnightAI.cpp \
+	PlayerbotDeathKnightAI.h \
+	PlayerbotDruidAI.cpp \
+	PlayerbotDruidAI.h \
+	PlayerbotHunterAI.cpp \
+	PlayerbotHunterAI.h \
+	PlayerbotMageAI.cpp \
+	PlayerbotMageAI.h \
+	PlayerbotPaladinAI.cpp \
+	PlayerbotPaladinAI.h \
+	PlayerbotPriestAI.cpp \
+	PlayerbotPriestAI.h \
+	PlayerbotRogueAI.cpp \
+	PlayerbotRogueAI.h \
+	PlayerbotShamanAI.cpp \
+	PlayerbotShamanAI.h \
+	PlayerbotWarlockAI.cpp \
+	PlayerbotWarlockAI.h \
+	PlayerbotWarriorAI.cpp \
+	PlayerbotWarriorAI.h \
 	PlayerDump.cpp \
 	PlayerDump.h \
 	PointMovementGenerator.cpp \

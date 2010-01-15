@@ -67,6 +67,8 @@ patches-*
 # VS binaries output
 #
 bin/*
+m4/*
+objdir/*
 
 #
 # Special exceptions
