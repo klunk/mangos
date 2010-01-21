@@ -2724,8 +2724,63 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
         ch.SendSysMessage(negOut.str().c_str());
     }
     
-    
-    else
+    // SJW - Conversation with NPC to buy goes here
+	else if ((text == "buy") || (text == "buy ") || (text.size() > 4 && text.substr(0, 4) == "buy "))
+	{
+		const uint64 playerSelection = fromPlayer.GetSelection( );
+        Creature* const creature = GetPlayer()->GetNPCIfCanInteractWith(playerSelection, UNIT_NPC_FLAG_VENDOR);
+        if (text == "buy" || text =="buy ") {
+            std::ostringstream itemsOut;
+            if (!creature) {
+                SendWhisper ("Selected NPC is not a vendor I can talk to.", fromPlayer);
+                return;
+            }
+            const VendorItemData* items = creature->GetVendorItems ();
+            if (items->Empty()) {
+                SendWhisper("This vendor does not have items I can buy.", fromPlayer);
+                return;
+            }
+            uint64 index = 0;
+            for (index = 0; index < items->GetItemCount ();++index) {
+                const VendorItem* vendorItem = items->GetItem(index);
+                ItemPrototype const* pItemProto = ObjectMgr::GetItemPrototype(vendorItem->item);
+
+                std::string itemName = pItemProto->Name1;
+                ItemLocalization(itemName, pItemProto->ItemId);
+
+                itemsOut << " |cffffffff|Hitem:" << pItemProto->ItemId
+                << ":0:0:0:0:0:0:0" << "|h[" << itemName << "]|h|r";
+                if (creature->GetVendorItemCurrentCount(vendorItem) > 1)
+                {
+                    itemsOut << "x" << creature->GetVendorItemCurrentCount(vendorItem) << ' ';
+                }
+            }
+            ChatHandler ch(&fromPlayer);
+            SendWhisper("This vendor has the following items to sell:", fromPlayer);
+            ch.SendSysMessage(itemsOut.str().c_str());
+        }
+        else
+        {
+            std::list<uint32> itemIds;
+            extractItemIds(text, itemIds);
+            if (!itemIds.empty()) 
+            {
+            	uint32 itemId = itemIds.front();
+                ItemPosCountVec dest;
+                uint8 res = m_bot->CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, itemId, 1 );
+                if( res == EQUIP_ERR_OK )
+                {
+                    m_bot->BuyItemFromVendor (playerSelection,itemId, 1, NULL_BAG, NULL_SLOT);
+                }
+                else
+                {
+                    SendWhisper("I have no space to put this item.", fromPlayer);
+                }
+            }
+        }
+	}
+
+	else
     {
     	// if this looks like an item link, reward item it completed quest and talking to NPC
         std::list<uint32> itemIds;
@@ -2734,49 +2789,48 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
         	uint32 itemId = itemIds.front();
         	bool wasRewarded = false;
     	    uint64 questRewarderGUID = m_bot->GetSelection();
+
         	Object* const pNpc = ObjectAccessor::GetObjectByTypeMask(*m_bot, questRewarderGUID, TYPEMASK_UNIT|TYPEMASK_GAMEOBJECT);
         	if (!pNpc)
         		return;
-        	
+
         	QuestMenu& questMenu = m_bot->PlayerTalkClass->GetQuestMenu();
-        	for (uint32 iI = 0; !wasRewarded && iI < questMenu.MenuItemCount(); ++iI)
-        	{
-        		QuestMenuItem const& qItem = questMenu.GetItem(iI);
-        		
-        	    uint32 questID = qItem.m_qId;
-        	    Quest const* pQuest = sObjectMgr.GetQuestTemplate(questID);
-        	    QuestStatus status = m_bot->GetQuestStatus(questID);
-        	        		        
-        	    // if quest is complete, turn it in
-        	    if (status == QUEST_STATUS_COMPLETE && 
-        	    	! m_bot->GetQuestRewardStatus(questID) && 
-        	    	pQuest->GetRewChoiceItemsCount() > 1 &&
-        	    	m_bot->CanRewardQuest(pQuest, false))
-        	    {
-	        		for (uint8 rewardIdx=0; !wasRewarded && rewardIdx < pQuest->GetRewChoiceItemsCount(); ++rewardIdx)
-					{
-						ItemPrototype const * const pRewardItem = sObjectMgr.GetItemPrototype(pQuest->RewChoiceItemId[rewardIdx]);
-						if (itemId == pRewardItem->ItemId)
-						{
-							m_bot->RewardQuest(pQuest, rewardIdx, pNpc, false);
-
-			        	    std::string questTitle  = pQuest->GetTitle();
-			        	    m_bot->GetPlayerbotAI()->QuestLocalization(questTitle, questID);
-							std::string itemName = pRewardItem->Name1;
-							m_bot->GetPlayerbotAI()->ItemLocalization(itemName, pRewardItem->ItemId);
-							
-			        	    std::ostringstream out;
-							out << "|cffffffff|Hitem:" << pRewardItem->ItemId << ":0:0:0:0:0:0:0" << "|h[" << itemName << "]|h|r rewarded";
-					        SendWhisper(out.str(), fromPlayer);
-					        wasRewarded = true;
-						}
-					}
-        	    }
-        	}
-
-    	}
+          	for (uint32 iI = 0; !wasRewarded && iI < questMenu.MenuItemCount(); ++iI)
+           	{
+           		QuestMenuItem const& qItem = questMenu.GetItem(iI);
+           		
+           	    uint32 questID = qItem.m_qId;
+           	    Quest const* pQuest = sObjectMgr.GetQuestTemplate(questID);
+           	    QuestStatus status = m_bot->GetQuestStatus(questID);
+           	        		        
+           	    // if quest is complete, turn it in
+           	    if (status == QUEST_STATUS_COMPLETE && 
+           	    	! m_bot->GetQuestRewardStatus(questID) && 
+           	    	pQuest->GetRewChoiceItemsCount() > 1 &&
+           	    	m_bot->CanRewardQuest(pQuest, false))
+           	    {
+            		for (uint8 rewardIdx=0; !wasRewarded && rewardIdx < pQuest->GetRewChoiceItemsCount(); ++rewardIdx)
+				    {
+					    ItemPrototype const * const pRewardItem = sObjectMgr.GetItemPrototype(pQuest->RewChoiceItemId[rewardIdx]);
+					    if (itemId == pRewardItem->ItemId)
+					    {
+						    m_bot->RewardQuest(pQuest, rewardIdx, pNpc, false);
+			            	    std::string questTitle  = pQuest->GetTitle();
+		            	    m_bot->GetPlayerbotAI()->QuestLocalization(questTitle, questID);
+						    std::string itemName = pRewardItem->Name1;
+						    m_bot->GetPlayerbotAI()->ItemLocalization(itemName, pRewardItem->ItemId);
+						
+		            	    std::ostringstream out;
+						    out << "|cffffffff|Hitem:" << pRewardItem->ItemId << ":0:0:0:0:0:0:0" << "|h[" << itemName << "]|h|r rewarded";
+				            SendWhisper(out.str(), fromPlayer);
+				            wasRewarded = true;
+					    }
+				    }
+           	    }
+           	}
+       	}
         else {
-            std::string msg = "What? follow, stay, (c)ast <spellname>, spells, (e)quip <itemlink>, (u)se <itemlink>, drop <questlink>, report, quests";
+            std::string msg = "What? follow, stay, (c)ast <spellname>, spells, (e)quip <itemlink>, (u)se <itemlink>, drop <questlink>, report, quests, buy <itemlink>";
             SendWhisper(msg, fromPlayer);
             m_bot->HandleEmoteCommand(EMOTE_ONESHOT_TALK);
         }
