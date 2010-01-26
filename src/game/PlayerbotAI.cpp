@@ -2725,6 +2725,79 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
     }
     
     // SJW - Conversation with NPC to buy goes here
+    else if (text == "sell junk") { 
+ 		const uint64 playerSelection = fromPlayer.GetSelection( );
+
+        // list out junk items
+        std::ostringstream out;
+        bool selling = false;
+
+        // list out items in main backpack
+        for (uint8 slot = INVENTORY_SLOT_ITEM_START; slot < INVENTORY_SLOT_ITEM_END; slot++)
+        {
+            const Item* const pItem = m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+            if (pItem)
+            {
+                const ItemPrototype* const pItemProto = pItem->GetProto();
+
+                std::string itemName = pItemProto->Name1;
+                const uint32 itemQuality = pItemProto->Quality;
+
+                  if (0 == itemQuality) 
+                  {
+                        if (!selling) 
+                        {
+                            selling = true;
+                            out << "Selling ";
+                        }
+                        out  << " |cffffffff|Hitem:" << pItemProto->ItemId
+                            << ":0:0:0:0:0:0:0" << "|h[" << itemName << "]|h|r";
+                        if (pItem->GetCount() > 1)
+                            out << "x" << pItem->GetCount() << ' ';
+                        SellItem(playerSelection,  pItemProto->ItemId, 0, fromPlayer);
+                  }
+            }
+        }
+        // list out items in other removable backpacks
+        for (uint8 bag = INVENTORY_SLOT_BAG_START; bag < INVENTORY_SLOT_BAG_END; ++bag)
+        {
+            const Bag* const pBag = (Bag*) m_bot->GetItemByPos(INVENTORY_SLOT_BAG_0, bag);
+            if (pBag)
+            {
+                for (uint8 slot = 0; slot < pBag->GetBagSize(); ++slot)
+                {
+                    const Item* const pItem = m_bot->GetItemByPos(bag, slot);
+                    if (pItem)
+                    {
+                        const ItemPrototype* const pItemProto = pItem->GetProto();
+                        std::string itemName = pItemProto->Name1;
+                        const uint32 itemQuality = pItemProto->Quality;
+
+                          if (0 == itemQuality) 
+                          {
+                                if (!selling) 
+                                {
+                                    selling = true;
+                                    out << "Selling ";
+                                }
+                                out  << " |cffffffff|Hitem:" << pItemProto->ItemId
+                                    << ":0:0:0:0:0:0:0" << "|h[" << itemName << "]|h|r";
+                                if (pItem->GetCount() > 1)
+                                    out << "x" << pItem->GetCount() << ' ';
+                                SellItem(playerSelection,  pItemProto->ItemId, 0, fromPlayer);
+                          }
+                    }
+                }
+            }
+        }
+
+        if (selling)
+        {
+            ChatHandler ch(&fromPlayer);
+            ch.SendSysMessage(out.str().c_str());
+        }
+    }
+
 	else if ((text == "buy") || (text == "buy ") || (text.size() > 4 && text.substr(0, 4) == "buy "))
 	{
 		const uint64 playerSelection = fromPlayer.GetSelection( );
@@ -2835,4 +2908,110 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
             m_bot->HandleEmoteCommand(EMOTE_ONESHOT_TALK);
         }
     }
+}
+
+void PlayerbotAI::SellItem( uint64 vendorguid, uint64 itemguid, uint32 count, Player& fromPlayer )
+{
+
+    if(!itemguid)
+        return;
+
+    sLog.outDebug(  "PlayerbotAI: Selling item %u",  uint32(GUID_LOPART(itemguid)));
+
+    Creature *pCreature = GetPlayer()->GetNPCIfCanInteractWith(vendorguid, UNIT_NPC_FLAG_VENDOR);
+    if (!pCreature)
+    {
+        sLog.outDebug( "PlayerbotAI: SellItem - Unit (GUID: %u) not found or you can't interact with him.", uint32(GUID_LOPART(vendorguid)) );
+        SendWhisper ("Unable to sell to that vendor.", fromPlayer);
+        return;
+    }
+
+    // remove fake death
+    if(GetPlayer()->hasUnitState(UNIT_STAT_DIED))
+        GetPlayer()->RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
+
+    Item *pItem = GetPlayer()->GetItemByGuid( itemguid );
+    if( pItem )
+    {
+        // prevent sell not owner item
+        if(m_bot->GetGUID() != pItem->GetOwnerGUID())
+        {
+            SendWhisper ("I cant sell that item.", fromPlayer);
+            return;
+        }
+
+        // prevent sell non empty bag by drag-and-drop at vendor's item list
+        if(pItem->IsBag() && !((Bag*)pItem)->IsEmpty())
+        {
+            SendWhisper ("The bag you want me to sell is not empty.", fromPlayer);
+            return;
+        }
+
+        // prevent sell currently looted item
+        if(m_bot->GetLootGUID() == pItem->GetGUID())
+        {
+            SendWhisper ("I cant sell that loot item.", fromPlayer);
+            return;
+        }
+
+        // special case at auto sell (sell all)
+        if(count == 0)
+        {
+            count = pItem->GetCount();
+        }
+        else
+        {
+            // prevent sell more items that exist in stack (possible only not from client)
+            if(count > pItem->GetCount())
+            {
+                SendWhisper ("I dont have that many to sell.", fromPlayer);
+                return;
+            }
+        }
+
+        ItemPrototype const *pProto = pItem->GetProto();
+        if( pProto )
+        {
+            if( pProto->SellPrice > 0 )
+            {
+                if(count < pItem->GetCount())               // need split items
+                {
+                    Item *pNewItem = pItem->CloneItem( count, m_bot );
+                    if (!pNewItem)
+                    {
+                        sLog.outError("PlayerbotAI: SellItem - could not create clone of item %u; count = %u", pItem->GetEntry(), count );
+                        SendWhisper ("There was a problem trying to sell that item.", fromPlayer);
+                        return;
+                    }
+
+                    pItem->SetCount( pItem->GetCount() - count );
+                    m_bot->ItemRemovedQuestCheck( pItem->GetEntry(), count );
+                    if( m_bot->IsInWorld() )
+                        pItem->SendCreateUpdateToPlayer( m_bot );
+                    pItem->SetState(ITEM_CHANGED, m_bot);
+
+                    fromPlayer.AddItemToBuyBackSlot( pNewItem );
+                    if( m_bot->IsInWorld() )
+                        pNewItem->SendCreateUpdateToPlayer( m_bot );
+                }
+                else
+                {
+                    m_bot->ItemRemovedQuestCheck( pItem->GetEntry(), pItem->GetCount());
+                    m_bot->RemoveItem( pItem->GetBagSlot(), pItem->GetSlot(), true);
+                    pItem->RemoveFromUpdateQueueOf(m_bot);
+                    fromPlayer.AddItemToBuyBackSlot( pItem );
+                }
+
+                m_bot->ModifyMoney( pProto->SellPrice * count );
+                SendWhisper ("Item sold.", fromPlayer);
+            }
+            else
+            {
+                SendWhisper ("I cant sell that item.", fromPlayer);
+            }
+            return;
+        }
+    }
+    SendWhisper ("I cant find that item to sell.", fromPlayer);
+    return;
 }

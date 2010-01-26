@@ -272,6 +272,9 @@ class MANGOS_DLL_SPEC PlayerbotAI
 		Unit *m_targetProtect;	// check 
 
 		Unit *m_followTarget;	// whom to follow in non combat situation?
+
+        // SJW - code to sell an item from the bots inventory
+        void SellItem( uint64 vendorguid, uint64 itemguid, uint32 count, Player& fromPlayer );
 };
 
 #endif
