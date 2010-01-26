@@ -2748,13 +2748,13 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
                         if (!selling) 
                         {
                             selling = true;
-                            out << "Selling ";
+                            out << "Sold ";
                         }
                         out  << " |cffffffff|Hitem:" << pItemProto->ItemId
                             << ":0:0:0:0:0:0:0" << "|h[" << itemName << "]|h|r";
                         if (pItem->GetCount() > 1)
                             out << "x" << pItem->GetCount() << ' ';
-                        SellItem(playerSelection,  pItemProto->ItemId, 0, fromPlayer);
+                        SellItem(playerSelection,  pItem->GetGUID(), 0, fromPlayer);
                   }
             }
         }
@@ -2778,13 +2778,13 @@ void PlayerbotAI::HandleCommand(const std::string& text, Player& fromPlayer)
                                 if (!selling) 
                                 {
                                     selling = true;
-                                    out << "Selling ";
+                                    out << "Sold ";
                                 }
                                 out  << " |cffffffff|Hitem:" << pItemProto->ItemId
                                     << ":0:0:0:0:0:0:0" << "|h[" << itemName << "]|h|r";
                                 if (pItem->GetCount() > 1)
                                     out << "x" << pItem->GetCount() << ' ';
-                                SellItem(playerSelection,  pItemProto->ItemId, 0, fromPlayer);
+                                SellItem(playerSelection, pItem->GetGUID(), 0, fromPlayer);
                           }
                     }
                 }
@@ -2934,7 +2934,7 @@ void PlayerbotAI::SellItem( uint64 vendorguid, uint64 itemguid, uint32 count, Pl
     if( pItem )
     {
         // prevent sell not owner item
-        if(m_bot->GetGUID() != pItem->GetOwnerGUID())
+        if(GetPlayer()->GetGUID() != pItem->GetOwnerGUID())
         {
             SendWhisper ("I cant sell that item.", fromPlayer);
             return;
@@ -2948,7 +2948,7 @@ void PlayerbotAI::SellItem( uint64 vendorguid, uint64 itemguid, uint32 count, Pl
         }
 
         // prevent sell currently looted item
-        if(m_bot->GetLootGUID() == pItem->GetGUID())
+        if(GetPlayer()->GetLootGUID() == pItem->GetGUID())
         {
             SendWhisper ("I cant sell that loot item.", fromPlayer);
             return;
@@ -2985,24 +2985,24 @@ void PlayerbotAI::SellItem( uint64 vendorguid, uint64 itemguid, uint32 count, Pl
                     }
 
                     pItem->SetCount( pItem->GetCount() - count );
-                    m_bot->ItemRemovedQuestCheck( pItem->GetEntry(), count );
-                    if( m_bot->IsInWorld() )
-                        pItem->SendCreateUpdateToPlayer( m_bot );
-                    pItem->SetState(ITEM_CHANGED, m_bot);
+                    GetPlayer()->ItemRemovedQuestCheck( pItem->GetEntry(), count );
+                    if( GetPlayer()->IsInWorld() )
+                        pItem->SendCreateUpdateToPlayer( GetPlayer() );
+                    pItem->SetState(ITEM_CHANGED, GetPlayer());
 
                     fromPlayer.AddItemToBuyBackSlot( pNewItem );
-                    if( m_bot->IsInWorld() )
-                        pNewItem->SendCreateUpdateToPlayer( m_bot );
+                    if( GetPlayer()->IsInWorld() )
+                        pNewItem->SendCreateUpdateToPlayer( GetPlayer() );
                 }
                 else
                 {
-                    m_bot->ItemRemovedQuestCheck( pItem->GetEntry(), pItem->GetCount());
-                    m_bot->RemoveItem( pItem->GetBagSlot(), pItem->GetSlot(), true);
-                    pItem->RemoveFromUpdateQueueOf(m_bot);
+                    GetPlayer()->ItemRemovedQuestCheck( pItem->GetEntry(), pItem->GetCount());
+                    GetPlayer()->RemoveItem( pItem->GetBagSlot(), pItem->GetSlot(), true);
+                    pItem->RemoveFromUpdateQueueOf(GetPlayer());
                     fromPlayer.AddItemToBuyBackSlot( pItem );
                 }
 
-                m_bot->ModifyMoney( pProto->SellPrice * count );
+                GetPlayer()->ModifyMoney( pProto->SellPrice * count );
                 SendWhisper ("Item sold.", fromPlayer);
             }
             else
