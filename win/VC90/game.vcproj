@@ -1043,8 +1043,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\AuctionHouseMgr.cpp"
-				>
+				RelativePath="..\..\src\game\AuctionHouseMgr.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\game\DestinationHolderImp.h"
@@ -1134,6 +1133,10 @@
 				RelativePath="..\..\src\game\AggressorAI.cpp"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Object"
+			>
 			<File
 				RelativePath="..\..\src\game\AggressorAI.h"
 				>

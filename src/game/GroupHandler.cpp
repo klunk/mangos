@@ -152,7 +152,7 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
     // ok, we do it
     WorldPacket data(SMSG_GROUP_INVITE, 10);                // guess size
     data << uint8(1);                                       // ok
-    data << GetPlayer()->GetName();
+    data << membername;
     player->GetSession()->SendPacket(&data);
 
     SendPartyResult(PARTY_OP_INVITE, membername, PARTY_RESULT_OK);
@@ -160,7 +160,7 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 {
-    recv_data.read_skip<uint32>();                          // value received in WorldSession::HandleGroupInviteOpcode and also skipeed currently?
+    // recv_data.read_skip<uint32>();                          // value received in WorldSession::HandleGroupInviteOpcode and also skipeed currently?
 
     Group *group = GetPlayer()->GetGroupInvite();
     if (!group) return;

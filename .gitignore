@@ -68,6 +68,7 @@ patches-*
 #
 bin/*
 m4/*
+html/*
 objdir/*
 
 #
